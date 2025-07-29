@@ -67,3 +67,38 @@ erDiagram
     PatientInfo ||--o{ Booking : books
     PatientAddress ||--o{ Booking : from
     HospitalInfo ||--o{ Booking : at
+```
+
+
+## 🏥 C2 Architecture - Container View
+
+```mermaid
+flowchart TD
+    user[User / Postman]
+    patientSvc[Container: Patient Service<br>Handles patient info, address, availability]
+    hospitalSvc[Container: Hospital Service<br>Manages hospital info and availability]
+    bookingSvc[Container: Booking Service<br>Coordinates bookings & applies logic]
+    geocodingSvc[Container: Geocoding Service<br>Calls Nominatim API]
+    haversineUtil[Container: Haversine Utility<br>Computes distance between coordinates]
+
+    patientDB[(Database: Patient DB)]
+    hospitalDB[(Database: Hospital DB)]
+    bookingDB[(Database: Booking DB)]
+
+    nominatim[Nominatim API<br>Public Geocoding Service]
+
+    user --> patientSvc
+    user --> hospitalSvc
+    user --> bookingSvc
+
+    patientSvc --> geocodingSvc
+    geocodingSvc --> nominatim
+
+    bookingSvc --> patientSvc
+    bookingSvc --> hospitalSvc
+    bookingSvc --> haversineUtil
+
+    patientSvc --> patientDB
+    hospitalSvc --> hospitalDB
+    bookingSvc --> bookingDB
+
